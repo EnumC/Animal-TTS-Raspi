@@ -6,6 +6,7 @@ This project is based on the premise of associative learning, which may allow fo
 Utilizes modified 60mm buttons as input devices, and output the interpreted inputs via a TTS library over audio out.
 Inputs can also be used to directly toggle IoT devices. 
 The 60mm buttons can eventually be replaced by capacitive touch targets for space optimization and improved aesthetics.
+Converted audio clips are cached in the audio/ directory.
 
 ### Getting Started
 This project is written in Python and relies on the RPi.GPIO library for input interrupts. Text-To-Speech is powered by Google Cloud's Text-To-Speech API with WaveNet. Additional experimental features relies on libraries such as: python-kasa, Beautiful Soup, and Requests. 
@@ -18,7 +19,7 @@ To start, enter:
 
 `sudo python startTTS.py`
 
-Requires Python >3.0.
+Requires Python >=3.5.
 
 
 ### More resources:

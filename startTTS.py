@@ -2,10 +2,10 @@
 # GNU GPLv3 License. See LICENSE
 
 import RPi.GPIO as GPIO
-
 import time
-
 from typing import Optional, List
+from google.cloud import texttospeech as tts
+from os import path
 
 btnDef = {
     # assign board pin to word/phrase
@@ -16,6 +16,34 @@ btnDef = {
 }
 
 stringBuffer: str = ""
+
+
+def text_to_wav(voice_name, text):
+    language_code = '-'.join(voice_name.split('-')[:2])
+
+    filename = f'audio/{language_code}_{voice_name}_{text}.wav'
+    
+    # check if audio already cached
+    if path.exists(filename):
+        print(filename + " already exists!")
+    else:
+        text_input = tts.SynthesisInput(text=text)
+        voice_params = tts.VoiceSelectionParams(
+            language_code=language_code,
+            name=voice_name)
+        audio_config = tts.AudioConfig(
+            audio_encoding=tts.AudioEncoding.LINEAR16)
+
+        client = tts.TextToSpeechClient()
+        response = client.synthesize_speech(
+            input=text_input,
+            voice=voice_params,
+            audio_config=audio_config)
+
+        
+        with open(filename, 'wb') as out:
+            out.write(response.audio_content)
+            print(f'Audio content written to "{filename}"')
 
 
 def intrHandler(pin) -> None:
@@ -40,6 +68,7 @@ def initGPIO(inputs: List[Optional[int]],
 
 def main() -> None:
     initGPIO(btnDef.keys(), None)
+    text_to_wav('en-US-Wavenet-A', "This is a test clip.")
 
 
 if __name__ == "__main__":
